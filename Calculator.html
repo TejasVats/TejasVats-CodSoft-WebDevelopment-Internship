@@ -33,3 +33,157 @@
     <script src="script.js"></script>
   </body>
 </html>
+*****************************
+CSS code
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: grey;
+    font-family: Arial, sans-serif;
+}
+
+.calculator {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 10px;
+    max-width: 300px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.display {
+    grid-column: 1 / -1;
+    text-align: right;
+    padding: 10px;
+    font-size: 24px;
+    background-color: white;
+    border: 1px solid grey;
+    border-radius: 5px;
+}
+
+.btn {
+    padding: 10px;
+    font-size: 20px;
+    text-align: center;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #ddd;
+}
+
+.about {
+    text-align: center;
+}
+*******************************
+Javascript code
+document.addEventListener("DOMContentLoaded", function () {
+    const display = document.getElementById("display");
+    let currentInput = "0";
+    let currentOperator = "";
+    let prevInput = "";
+  
+    function updateDisplay() {
+      display.textContent = currentInput;
+    }
+  
+    function handleDigitClick(digit) {
+      if (
+        currentInput === "0" ||
+        currentInput === "Infinity" ||
+        currentInput === "-Infinity"
+      ) {
+        currentInput = digit;
+      } else {
+        currentInput += digit;
+      }
+      updateDisplay();
+    }
+  
+    function handleOperatorClick(operator) {
+      prevInput = currentInput;
+      currentInput = "0";
+      currentOperator = operator;
+    }
+  
+    function handleEqualsClick() {
+      const prev = parseFloat(prevInput);
+      const current = parseFloat(currentInput);
+  
+      switch (currentOperator) {
+        case "+":
+          currentInput = prev + current;
+          break;
+        case "-":
+          currentInput = prev - current;
+          break;
+        case "*":
+          currentInput = prev * current;
+          break;
+        case "/":
+          currentInput = prev / current;
+          break;
+      }
+  
+      currentOperator = "";
+      prevInput = "";
+      updateDisplay();
+    }
+  
+    function clear() {
+      currentInput = "0";
+      currentOperator = "";
+      prevInput = "";
+      updateDisplay();
+    }
+  
+    for (let i = 0; i <= 9; i++) {
+      document.getElementById(i.toString()).addEventListener("click", () => {
+        handleDigitClick(i.toString());
+      });
+    }
+  
+    document
+      .getElementById("add")
+      .addEventListener("click", () => handleOperatorClick("+"));
+    document
+      .getElementById("subtract")
+      .addEventListener("click", () => handleOperatorClick("-"));
+    document
+      .getElementById("multiply")
+      .addEventListener("click", () => handleOperatorClick("*"));
+    document
+      .getElementById("divide")
+      .addEventListener("click", () => handleOperatorClick("/"));
+  
+    document.getElementById("decimal").addEventListener("click", () => {
+      if (!currentInput.includes(".")) {
+        currentInput += ".";
+        updateDisplay();
+      }
+    });
+  
+    document
+      .getElementById("equals")
+      .addEventListener("click", handleEqualsClick);
+    document.getElementById("clear").addEventListener("click", clear);
+  
+    document.getElementById("backspace").addEventListener("click", () => {
+      currentInput = currentInput.slice(0, -1);
+      if (currentInput === "") {
+        currentInput = "0";
+      }
+      updateDisplay();
+    });
+  
+    updateDisplay();
+  });
